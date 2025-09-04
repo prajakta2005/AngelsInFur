@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "552383087788",
+    "project_id": "angelsinfur-eff90",
+    "storage_bucket": "angelsinfur-eff90.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:552383087788:android:95140715bafc23b2230b09",
+        "android_client_info": {
+          "package_name": "com.example.angels_in_fur"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4yYTzpuK4csls5WwlK7DYtTcTJCqyfds"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
