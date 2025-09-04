@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -13,17 +14,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> pages = [
     {
-      "image": "assets/onboard1.jpg",
+      "image": "assets/animation02.json",
       "title": "Welcome to AngelsInFur",
       "desc": "Because a paw print on your heart lasts forever❤️💛"
     },
     {
-      "image": "assets/onboard2.jpg",
+      "image": "assets/animation03.json",
       "title": "Adopt & Rescue",
       "desc": "Find your Angel and give them a loving home."
     },
     {
-      "image": "assets/onboard3.jpg",
+      "image": "assets/animation04.json",
       "title": "Care & Support",
       "desc": "Get expert tips to keep your pets happy & healthy."
     },
@@ -45,7 +46,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(page["image"]!, height: 250),
+                  Lottie.asset(
+                    page["image"]!,
+                    height: 250,
+                    fit: BoxFit.contain,
+                  ),
                   const SizedBox(height: 40),
                   Text(
                     page["title"]!,
