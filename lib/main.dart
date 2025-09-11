@@ -17,6 +17,7 @@ import 'providers/theme_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(const ProviderScope(child: AngelsInFurApp()));
 }
 
@@ -35,7 +36,7 @@ class AngelsInFurApp extends ConsumerWidget {
       darkTheme: darkTheme,
       initialRoute: '/',
       routes: {
-        '/': (context) => SplashScreen(),
+        '/': (context) => const SplashScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignupScreen(),

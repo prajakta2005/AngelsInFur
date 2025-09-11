@@ -3,8 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+// Providers
 import '../providers/theme_provider.dart';
-import 'adoption_hub_screen.dart'; // 👈 make sure this file exists
+
+// Feature Screens
+import 'adoption_hub_screen.dart';
+import 'emergency_hub_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -16,7 +20,14 @@ class HomeScreen extends ConsumerWidget {
 
     final userName = user?.displayName ?? 'Guardian!';
 
+    // 🔹 Features List with route keys
     final features = [
+      {
+        'title': 'Emergency Hub',
+        'desc': 'Report emergencies for NGOs & citizens 🚨',
+        'icon': Icons.report_problem,
+        'route': 'emergency',
+      },
       {
         'title': 'Adoption Hub',
         'desc': 'Find your forever Angel 🐶🐱',
@@ -27,23 +38,40 @@ class HomeScreen extends ConsumerWidget {
         'title': 'Lost & Found',
         'desc': 'Report or find missing animals 👀',
         'icon': Icons.search,
+        'route': 'lostfound',
       },
       {
         'title': 'Pet-Care Tips',
         'desc': 'Care and Warmth is what they need 😊',
         'icon': Icons.info_outline,
+        'route': 'tips',
       },
       {
         'title': 'Vet Connect',
         'desc': 'Book appointments with nearby vets 🩺',
         'icon': Icons.medical_services,
+        'route': 'vet',
       },
       {
         'title': 'Donate',
         'desc': 'Support shelters & animal causes 💝',
         'icon': Icons.volunteer_activism,
+        'route': 'donate',
       },
     ];
+
+    // 🔹 Route mapping (easy to scale later)
+    Widget? _getScreen(String? route) {
+      switch (route) {
+        case 'adoption':
+          return AdoptionHubScreen();
+        case 'emergency':
+          return EmergencyHubScreen();
+        // Later we’ll add Lost & Found, Vet Connect, etc.
+        default:
+          return null;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -95,21 +123,22 @@ class HomeScreen extends ConsumerWidget {
                     title: Text(feature['title'] as String),
                     subtitle: Text(feature['desc'] as String),
                     onTap: () {
-                      if (feature['route'] == 'adoption') {
+                      final screen = _getScreen(feature['route'] as String?);
+                      if (screen != null) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => AdoptionHubScreen(),
-                          ),
+                          MaterialPageRoute(builder: (_) => screen),
                         );
                       }
-                      // later add Lost & Found, Vet Connect, etc
                     },
                   ),
-                ).animate().fadeIn(
+                )
+                    .animate()
+                    .fadeIn(
                       duration: 600.ms,
                       delay: (index * 200).ms,
-                    ).slideY(
+                    )
+                    .slideY(
                       begin: 0.3,
                       duration: 600.ms,
                       delay: (index * 200).ms,
