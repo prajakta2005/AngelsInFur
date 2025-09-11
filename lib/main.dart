@@ -9,6 +9,8 @@ import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/adoption_hub_screen.dart';
+import 'screens/pet_detail_screen.dart'; // New import
+import 'screens/adoption_form_screen.dart'; // New import
 
 // Theme
 import 'theme/theme.dart';
@@ -42,6 +44,8 @@ class AngelsInFurApp extends ConsumerWidget {
         '/signup': (context) => const SignupScreen(),
         '/home': (context) => const HomeScreen(),
         '/adoption': (context) => AdoptionHubScreen(),
+        '/pet-detail': (context) => const PetDetailScreen(), // Removed pet parameter
+        '/adoption-form': (context) => const AdoptionFormScreen(), // Removed pet parameter
       },
     );
   }

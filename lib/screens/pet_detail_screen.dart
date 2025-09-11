@@ -1,56 +1,55 @@
 import 'package:flutter/material.dart';
-import 'adoption_hub_screen.dart';
+import 'adoption_form_screen.dart';
+import '../models/pet_model.dart'; // Ensure this import is correct
 
 class PetDetailScreen extends StatelessWidget {
-  final Pet pet;
-
-  const PetDetailScreen({super.key, required this.pet});
+  const PetDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final pet = ModalRoute.of(context)!.settings.arguments as Pet;
+
     return Scaffold(
-      appBar: AppBar(title: Text(pet.name)),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      appBar: AppBar(
+        title: Text(pet.name),
+        backgroundColor: Colors.purple[400],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.network(
-                pet.imageUrl,
-                height: 250,
-                width: double.infinity,
-                fit: BoxFit.cover,
+            Center(
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(pet.imageUrl),
+                radius: 80,
+                backgroundColor: Colors.white,
               ),
             ),
-            const SizedBox(height: 20),
-            Text(
-              pet.name,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            Text(
-              "${pet.breed}, ${pet.age} yrs old",
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              pet.description,
-              style: const TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("You showed interest in adopting ${pet.name}!")),
-                );
-              },
-              icon: const Icon(Icons.pets),
-              label: const Text("Adopt Me 💕"),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            const SizedBox(height: 16),
+            Text("Name: ${pet.name}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            Text("Breed: ${pet.breed}", style: const TextStyle(fontSize: 18)),
+            Text("Age: ${pet.age} yrs", style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 16),
+            Text(pet.description, style: const TextStyle(fontSize: 16)),
+            const Spacer(),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/adoption-form',
+                    arguments: pet,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: const Text("Adopt Me!", style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
-            )
+            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
