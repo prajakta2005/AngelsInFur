@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+// New Screens
+import 'vets_near_animal_screen.dart';
+import 'ngos_near_animal_screen.dart';
+import 'help_financially_screen.dart';
+import 'give_contact_screen.dart';
+import 'other_help_screen.dart';
 
 class EmergencyHubScreen extends StatefulWidget {
   const EmergencyHubScreen({super.key});
@@ -11,6 +20,39 @@ class EmergencyHubScreen extends StatefulWidget {
 class _EmergencyHubScreenState extends State<EmergencyHubScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
+
+  Future<void> _fetchCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Location services are disabled. Please enable them.")),
+      );
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Location permissions are denied.")),
+        );
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Location permissions are permanently denied. Please enable in settings.")),
+      );
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      _locationController.text = '${position.latitude}, ${position.longitude}';
+    });
+  }
 
   Future<void> _submitEmergency() async {
     if (_descriptionController.text.isEmpty || _locationController.text.isEmpty) {
@@ -32,6 +74,87 @@ class _EmergencyHubScreenState extends State<EmergencyHubScreen> {
 
     _descriptionController.clear();
     _locationController.clear();
+  }
+
+  // Open Google Maps with location
+  Future<void> _openGoogleMaps(String location) async {
+    final Uri mapsUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$location');
+    if (await canLaunchUrl(mapsUri)) {
+      await launchUrl(mapsUri);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Could not open Google Maps.")),
+      );
+    }
+  }
+
+  // Show options dialog for emergency
+  void _showHelpOptions(String location) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Help Options"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.location_on),
+              title: const Text("View on Google Maps"),
+              onTap: () {
+                Navigator.pop(context);
+                _openGoogleMaps(location);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.local_hospital),
+              title: const Text("Vets Near Animal"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => VetsNearAnimalScreen(location: location)));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.group),
+              title: const Text("NGOs Near Animal"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => NGOsNearAnimalScreen(location: location)));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.attach_money),
+              title: const Text("Help Financially"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => HelpFinanciallyScreen(location: location)));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.contacts),
+              title: const Text("Give Contacts"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => GiveContactScreen(location: location)));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.help_outline),
+              title: const Text("Other Ways to Help"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => OtherHelpScreen(location: location)));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCurrentLocation();
   }
 
   @override
@@ -89,6 +212,7 @@ class _EmergencyHubScreenState extends State<EmergencyHubScreen> {
                           title: Text(data["location"] ?? "Unknown location"),
                           subtitle: Text(data["description"] ?? "No description"),
                           trailing: const Icon(Icons.warning, color: Colors.red),
+                          onTap: () => _showHelpOptions(data["location"] ?? ""),
                         ),
                       );
                     },
