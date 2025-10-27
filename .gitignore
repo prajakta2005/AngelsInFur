@@ -1,0 +1,50 @@
+# Flutter / Dart / Pub
+.dart_tool/
+.build/
+.pub/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+
+# Build outputs
+/build/
+**/build/
+**/ios/Flutter/.last_build_id
+**/windows/Flutter/ephemeral/
+**/macos/Flutter/ephemeral/
+**/linux/Flutter/ephemeral/
+
+# Android
+/android/.gradle/
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# Firebase sensitive files
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VSCode
+.vscode/
+
+# OS generated
+.DS_Store
+Thumbs.db
+*.log
+*.lock
+
+# Python / miscellaneous
+*.pyc
+*.swp
+*.class
+
+# Symbolication / obfuscation
+app.*.symbols
+app.*.map.json
